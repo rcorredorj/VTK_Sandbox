@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 INCLUDE(CPack)
 
-PROJECT(BoundarySurfaceByDistance)
+PROJECT(VTK_Tools)
 
 # VTK
 FIND_PACKAGE(VTK REQUIRED)
@@ -11,14 +11,14 @@ IF(VTK_FOUND)
 ENDIF(VTK_FOUND)
 
 INCLUDE_DIRECTORIES(
-	${BoundarySurfaceByDistance_SOURCE_DIR}/lib
+	${VTK_Tools_SOURCE_DIR}/lib
 )
-
-ADD_EXECUTABLE(BoundarySurfaceByDistance MACOSX_BUNDLE BoundarySurfaceByDistance)
+MESSAGE(${VTK_Tools_SOURCE_DIR}/lib)
+ADD_EXECUTABLE(BoundarySurfaceByDistanceApp MACOSX_BUNDLE BoundarySurfaceByDistanceApp)
 
 # Make sure the linker can find the library once it is built. Look into VStudio if OS=Windows 
-TARGET_LINK_LIBRARIES(BoundarySurfaceByDistance ${VTK_LIBRARIES} MeshTools)
+TARGET_LINK_LIBRARIES(BoundarySurfaceByDistanceApp ${VTK_LIBRARIES} MeshTools)
 
-INSTALL(TARGETS BoundarySurfaceByDistance DESTINATION exec)
+INSTALL(TARGETS BoundarySurfaceByDistanceApp DESTINATION exec)
 
 ADD_SUBDIRECTORY (lib) 

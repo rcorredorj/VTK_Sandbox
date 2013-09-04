@@ -211,6 +211,53 @@ void BoundarySurfaceExtraction::EvaluateDistance()
 // END TEST CODE 01
 ///////////////////////////////////////
 
+void BoundarySurfaceExtraction::EvaluateDistanceByThresholdCells()
+{
+	
+	 std::cout<<"RaC BoundarySurfaceExtraction::EvaluateDistanceByThresholdCells " << _inputPolydata1 << std::endl;
+	if(_inputPolydata1!=NULL && _inputPolydata2!=NULL)
+	{
+		// Preprocess steps
+		PreprocessMeshes();
+		
+		std::cout << "Current time: " << _timerLog->GetUniversalTime() << std::endl;
+		_timerLog->MarkEvent("Before everything");
+		// Apply distance filter
+		vtkSmartPointer<vtkDistancePolyDataFilter> distanceFilter = vtkSmartPointer<vtkDistancePolyDataFilter>::New();
+ 
+		distanceFilter->SetInputConnection( 0, _inputPolydata1->GetProducerPort() );
+		distanceFilter->SetInputConnection( 1, _inputPolydata2->GetProducerPort() );
+		// Only absolute distance
+		distanceFilter->SignedDistanceOff();
+		distanceFilter->Update();
+		
+		// Timer 
+		vtkSmartPointer<vtkThreshold> threshold = vtkSmartPointer<vtkThreshold>::New();
+		threshold->SetInputConnection(distanceFilter->GetOutputPort());
+		threshold->ThresholdBetween(0,_distanceThresholdBetweenMeshes);
+		// doesn't work because the array is not added as SCALARS, i.e. via SetScalars
+		// threshold->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_CELLS, vtkDataSetAttributes::SCALARS);
+		// use like this:
+		threshold->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_CELLS, "Distance");
+		threshold->Update();
+ 
+		vtkSmartPointer<vtkGeometryFilter> geometryFilter = vtkSmartPointer<vtkGeometryFilter>::New();
+		geometryFilter->SetInputConnection(threshold->GetOutputPort());
+		geometryFilter->Update(); 
+ 
+		vtkSmartPointer<vtkPolyData> thresholdedPolydata = geometryFilter->GetOutput();
+		std::cout << "There are " << thresholdedPolydata->GetNumberOfCells() 
+            << " cells after thresholding." << std::endl;
+
+		_timerLog->MarkEvent("After geometry filter");
+		
+		std::cout << "Timer log:" << *_timerLog << std::endl;
+		_outputPolydata=geometryFilter->GetOutput();
+
+	}
+
+}
+
 vtkSmartPointer<vtkPolyData> BoundarySurfaceExtraction::ReadPolyData( std::string polydataFilename)
  {
 	 vtkSmartPointer<vtkPolyDataReader> polyReader = vtkSmartPointer<vtkPolyDataReader>::New();

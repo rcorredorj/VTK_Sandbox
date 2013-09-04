@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 // LOCAL LIBS 
-#include <BoundarySurfaceExtraction.h>
+#include "BoundarySurfaceExtraction.h"
 
 //VTK
 #include <vtkPolyData.h>

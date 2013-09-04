@@ -28,6 +28,7 @@
 #include "vtkExtractCells.h"
 #include "vtkGeometryFilter.h"
 #include "vtkTimerLog.h"
+#include "vtkThreshold.h"
 
 //---------------------------------------------
 //
@@ -47,6 +48,7 @@ class BoundarySurfaceExtraction
 	  vtkSmartPointer<vtkPolyData> GetOutputPolyData();
 	  void WriteOutputPolyData(std::string polydataFilename);
 	  void EvaluateDistance();
+	  void EvaluateDistanceByThresholdCells();
 	  
       
    private:
