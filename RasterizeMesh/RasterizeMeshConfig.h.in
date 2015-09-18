@@ -1,0 +1,3 @@
+// the configured options and settings for RasterizeMesh
+#define RasterizeMesh_VERSION_MAJOR @RasterizeMesh_VERSION_MAJOR@
+#define RasterizeMesh_VERSION_MINOR @RasterizeMesh_VERSION_MINOR@
